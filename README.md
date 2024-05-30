@@ -13,7 +13,7 @@ You can install the development version of `ggirf` from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("muhsinciftci/muhsinciftci.github.io")
+devtools::install_github("muhsinciftci/ggirf")
 ```
 
 ## Contribution
@@ -57,19 +57,13 @@ var_estimation <- VAR(Canada, p = 2, type = "const")
 var_irf        <- irf(var_estimation, impulse = 'e')
 ```
 
-Default plot in vars:
+and the impulse response graph via `ggirf` would be:
 
 ``` r
-plot(var_irf)
+gg_vars(irf_result = var_irf, var_shock = 'e', line_color = 'black', shade_color = gg_colors[7]) +
+  gg_theme_irf()
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
-
-and the impulse response via `ggirf` would be:
-
-``` r
-gg_vars(irf_result = var_irf, var_shock = 'e',
-        line_color = 'black', shade_color = gg_colors[7]) + gg_theme_irf()
-```
-
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" /> or
+you can simply provide one variable as well. **Providing multiple shocks
+once is not allowed.**
