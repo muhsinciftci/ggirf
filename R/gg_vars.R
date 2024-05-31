@@ -2,6 +2,7 @@
 #' @title Plot impulse response from vars package.
 #' @param irf_result impulse response from a var
 #' @param var_shock  Which shock in the VAR
+#' @param var_endo   Which endogenous variables to plot? Default is all variables
 #' @param scale_option Provide scaling options. Options are free_x, free_y and free. For details refer to ggplot2 facet_wrap
 #' @param line_color Provide the line color of impulse response (mean value)
 #' @param shade_color Provide the shade color of impulse response (confidence interval)
@@ -15,37 +16,41 @@
 gg_vars <- function(
     irf_result,
     var_shock,
-    line_color = gg_colors[2],
-    shade_color = gg_colors[3],
-    alpha_trans = 0.3,
+    var_endo = var_irf$response,
+    line_color = 'black',
+    shade_color = '#009CDE',
+    alpha_trans = 0.5,
     scale_option = 'free',
     xlab = NULL, ylab = NULL
     ){
 
+  # Check the length of the shock vector
+  if (length(var_shock) > 1) { stop('Please provide one shock each time') }
+
   # Avoid global variable warning
-  Periods <- ir_mean <- ir_ub <- ir_lb <- shock <- endo_var <- impulse_mean <- impulse_lb <- impulse_ub <- NULL
+  Periods <- var_irf <- ir_mean <- ir_ub <- ir_lb <- shock <- endo_var <- impulse_mean <- impulse_lb <- impulse_ub <- NULL
 
   ir_mean <- tibble::tibble()
   ir_lb   <- tibble::tibble()
-  ir_lb   <- tibble::tibble()
+  ir_ub   <- tibble::tibble()
 
-  for (vvar in irf_result$impulse ) {
-    ir_mean = rbind(ir_mean, irf_result$irf[[vvar]] |>
-                      tibble::as_tibble() |>
-                      dplyr::mutate(shock = vvar)
+  ir_mean = rbind(
+    ir_mean, irf_result$irf[[var_shock]] |>
+      tibble::as_tibble() |>
+      dplyr::mutate(shock = var_shock)
     )
 
-    ir_lb = rbind(ir_lb, irf_result$Lower[[vvar]] |>
-                    tibble::as_tibble() |>
-                    dplyr::mutate(shock = vvar)
+  ir_lb = rbind(
+    ir_lb, irf_result$Lower[[var_shock]] |>
+      tibble::as_tibble() |>
+      dplyr::mutate(shock = var_shock)
     )
 
-    ir_ub = rbind(ir_ub, irf_result$Upper[[vvar]] |>
-                    tibble::as_tibble() |>
-                    dplyr::mutate(shock = vvar)
+  ir_ub = rbind(
+    ir_ub, irf_result$Upper[[var_shock]] |>
+      tibble::as_tibble() |>
+      dplyr::mutate(shock = var_shock)
     )
-
-  }
 
   # Long format
   ir_mean <-
@@ -68,13 +73,10 @@ gg_vars <- function(
     dplyr::left_join(ir_lb, by = c('shock', 'endo_var', 'Periods')) |>
     dplyr::left_join(ir_ub, by = c('shock', 'endo_var', 'Periods'))
 
-  if (length(var_shock) > 1) {
-    stop('Please provide one shock each time')
-  }
-
   return(
   ir_tibble |>
     dplyr::filter(shock == var_shock) |>
+    dplyr::filter(endo_var %in% var_endo) |>
     ggplot2::ggplot(aes(x = Periods)) +
     ggplot2::geom_line(aes(y = impulse_mean), color = line_color) +
     ggplot2::geom_hline(yintercept = 0, color = 'gray50', linetype = 2) +

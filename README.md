@@ -53,17 +53,32 @@ library(ggirf)
 ```
 
 ``` r
-var_estimation <- VAR(Canada, p = 2, type = "const")
-var_irf        <- irf(var_estimation, impulse = 'e')
+var_estimation <- vars::VAR(Canada, p = 2, type = "const")
+var_irf        <- vars::irf(var_estimation)
 ```
 
 and the impulse response graph via `ggirf` would be:
 
 ``` r
-gg_vars(irf_result = var_irf, var_shock = 'e', line_color = 'black', shade_color = gg_colors[7]) +
-  gg_theme_irf()
+gg_vars(irf_result = var_irf, var_shock = 'e') +
+  gg_theme_irf() +
+  scale_x_continuous(minor_breaks = NULL, n.breaks = 6)
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" /> or
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" /> or
 you can simply provide one variable as well. **Providing multiple shocks
-once is not allowed.**
+once is not allowed.** Providing a subset of endogenous variables at
+once is allowed though.
+
+``` r
+gg_vars(irf_result = var_irf, var_shock = 'e', var_endo = c('e', 'rw'), shade_color = 'orange') +
+  gg_theme_irf() +
+  scale_x_continuous(minor_breaks = NULL, n.breaks = 6) +
+  ggtitle('Subset of endogenous variables')
+```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+
+## Local projections impulse response analysis via `lpirfs` package
+
+To be added here…

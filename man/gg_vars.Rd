@@ -7,9 +7,10 @@
 gg_vars(
   irf_result,
   var_shock,
-  line_color = gg_colors[2],
-  shade_color = gg_colors[3],
-  alpha_trans = 0.3,
+  var_endo = var_irf$response,
+  line_color = "black",
+  shade_color = "#009CDE",
+  alpha_trans = 0.5,
   scale_option = "free",
   xlab = NULL,
   ylab = NULL
@@ -19,6 +20,8 @@ gg_vars(
 \item{irf_result}{impulse response from a var}
 
 \item{var_shock}{Which shock in the VAR}
+
+\item{var_endo}{Which endogenous variables to plot? Default is all variables}
 
 \item{line_color}{Provide the line color of impulse response (mean value)}
 
