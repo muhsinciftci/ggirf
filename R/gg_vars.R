@@ -9,7 +9,8 @@
 #' @param alpha_trans Transparency of shade colors
 #' @param xlab label on x axis
 #' @param ylab label on y axis
-#'
+#' @param num_col Number of columns when faceting charts
+#' @param return_only_data Should return only the resulting data instead of ggplot2 chart? Useful for post processing and comparison with other methods
 #' @return Returns a ggplot2 chart
 #' @export
 #' @import dplyr tidyr ggplot2 vars tibble
@@ -21,14 +22,14 @@ gg_vars <- function(
     shade_color = '#009CDE',
     alpha_trans = 0.5,
     scale_option = 'free',
-    xlab = NULL, ylab = NULL
+    xlab = NULL,
+    ylab = NULL,
+    num_col = NULL,
+    return_only_data = FALSE
     ){
 
   # Check the length of the shock vector
   if (length(var_shock) > 1) { stop('Please provide one shock each time') }
-
-  # Avoid global variable warning
-  Periods <- var_irf <- ir_mean <- ir_ub <- ir_lb <- shock <- endo_var <- impulse_mean <- impulse_lb <- impulse_ub <- NULL
 
   ir_mean <- tibble::tibble()
   ir_lb   <- tibble::tibble()
@@ -68,22 +69,25 @@ gg_vars <- function(
     tidyr::pivot_longer(!shock, names_to = 'endo_var', values_to = 'impulse_ub') |>
     dplyr::mutate(Periods = 1:n(), .by = c('shock', 'endo_var'))
 
-  ir_tibble <-
+  tibble_vars_final <-
     ir_mean |>
     dplyr::left_join(ir_lb, by = c('shock', 'endo_var', 'Periods')) |>
-    dplyr::left_join(ir_ub, by = c('shock', 'endo_var', 'Periods'))
-
-  return(
-  ir_tibble |>
+    dplyr::left_join(ir_ub, by = c('shock', 'endo_var', 'Periods')) |>
     dplyr::filter(shock == var_shock) |>
-    dplyr::filter(endo_var %in% var_endo) |>
-    ggplot2::ggplot(aes(x = Periods)) +
-    ggplot2::geom_line(aes(y = impulse_mean), color = line_color) +
-    ggplot2::geom_hline(yintercept = 0, color = 'gray50', linetype = 2) +
-    ggplot2::geom_ribbon(aes(ymin = impulse_lb, ymax = impulse_ub),
-                         fill = shade_color, alpha = alpha_trans) +
-    ggplot2::facet_wrap(~endo_var, scales = scale_option) +
-    ggplot2::labs(x = xlab, y = ylab)
-  )
+    dplyr::filter(endo_var %in% var_endo)
 
+  if (return_only_data) {
+    return(tibble_vars_final)
+  } else{
+    return(
+      tibble_vars_final |>
+        ggplot2::ggplot(aes(x = Periods)) +
+        ggplot2::geom_line(aes(y = impulse_mean), color = line_color) +
+        ggplot2::geom_hline(yintercept = 0, color = 'gray50', linetype = 2) +
+        ggplot2::geom_ribbon(aes(ymin = impulse_lb, ymax = impulse_ub),
+                             fill = shade_color, alpha = alpha_trans) +
+        ggplot2::facet_wrap(~endo_var, scales = scale_option, ncol = num_col) +
+        ggplot2::labs(x = xlab, y = ylab)
+    )
+  }
 }

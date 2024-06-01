@@ -14,6 +14,7 @@ RoxygenNote: 7.2.3
 Imports: 
     dplyr,
     ggplot2,
+    lpirfs,
     tibble,
     tidyr,
     vars

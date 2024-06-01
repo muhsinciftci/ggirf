@@ -5,20 +5,44 @@
 \title{Plot impulse response of linear local projections in lpirfs package.}
 \usage{
 gg_lpirfs_lin(
-  est_result,
-  chart_title = glue::glue("{est_result$specs$endog_data} to {est_result$specs$shock}"),
+  lp_lin,
+  shock_lp,
+  endo_lp = lp_lin$specs$column_names,
+  line_color = "black",
+  shade_color = "#009CDE",
+  alpha_trans = 0.5,
+  scale_option = "free",
+  chart_title = NULL,
   xlab = NULL,
-  ylab = NULL
+  ylab = NULL,
+  num_col = NULL,
+  return_only_data = FALSE
 )
 }
 \arguments{
-\item{est_result}{estimation results from the lpirfs package}
+\item{lp_lin}{estimation results from the lpirfs package}
+
+\item{shock_lp}{Which shock in the local projections}
+
+\item{endo_lp}{Which endogenous variables to plot? Default is all variables}
+
+\item{line_color}{Provide the line color of impulse response (mean value)}
+
+\item{shade_color}{Provide the shade color of impulse response (confidence interval)}
+
+\item{alpha_trans}{Transparency of shade colors}
+
+\item{scale_option}{Provide scaling options. Options are free_x, free_y and free. For details refer to ggplot2 facet_wrap}
 
 \item{chart_title}{The chart title}
 
 \item{xlab}{label on x axis}
 
 \item{ylab}{label on y axis}
+
+\item{num_col}{Number of columns when faceting charts}
+
+\item{return_only_data}{Should return only the resulting data instead of ggplot2 chart? Useful for post processing and comparison with other methods}
 }
 \value{
 Returns a ggplot2 chart

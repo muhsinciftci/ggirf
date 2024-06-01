@@ -20,7 +20,7 @@ This package provides ggplot2 support for impulse response analysis in various p
 ## Installation
 You can install the development version of `ggirf` from [GitHub](https://github.com/) with:
 
-```{r, eval=FALSE}
+```
 # install.packages("devtools")
 devtools::install_github("muhsinciftci/ggirf")
 ```
@@ -32,7 +32,9 @@ Should you want to contribute to this package, please make a pull request via th
 ```{r}
 library(vars)
 library(tidyverse)
+library(lpirfs)
 library(ggirf)
+theme_set(gg_theme_irf())
 ```
 
 ```{r}
@@ -56,9 +58,53 @@ gg_vars(irf_result = var_irf, var_shock = 'e', var_endo = c('e', 'rw'), shade_co
 ```
 
 ## Local projections impulse response analysis via `lpirfs` package
-To be added here...
+```{r}
+endog_data <- vars::Canada |> tibble::as_tibble()
 
+est_lp_lin <- lp_lin(
+  endog_data,
+  lags_endog_lin = 2,
+  trend          = 0,
+  shock_type     = 1,
+  confint        = 1.96,
+  hor            = 12
+  )
+```
 
+The default charts are:
+```{r}
+linear_plots <- plot_lin(est_lp_lin)
+linear_plots[[1]]
+```
+
+The same result in `ggirf` package would be:
+```{r}
+gg_lpirfs_lin(
+  lp_lin = est_lp_lin,
+  shock_lp = 'e',
+  endo_lp = 'e'
+)
+```
+
+or plotting many endogenous variables at once is possible. Default is all variables
+```{r}
+gg_lpirfs_lin(
+  lp_lin = est_lp_lin,
+  shock_lp = 'e',
+  num_col = 2
+) +
+  ggtitle('The impact of variable .... on variables')
+```
+
+or one can only produce the resulting tibble instead of charts. This is useful especially when one want to compare results from different methods and plot them together.
+```{r}
+gg_lpirfs_lin(
+  lp_lin = est_lp_lin,
+  shock_lp = 'e',
+  return_only_data = T
+) |> 
+  head()
+```
 
 
 
