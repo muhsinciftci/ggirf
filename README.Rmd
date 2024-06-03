@@ -14,7 +14,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-# `ggirf`
+# ggirf
+<img src="man/figures/logo.png" align="right" height="175" alt="" />
+
 This package provides ggplot2 support for impulse response analysis in various packages such as `vars`, `lpirfs`, `BGVAR` used for macroeconomic analysis. The library includes custom colors and a ggplot2 theme. You can optionally provide different colors.
 
 ## Installation
@@ -38,8 +40,13 @@ theme_set(gg_theme_irf())
 ```
 
 ```{r}
-var_estimation <- vars::VAR(Canada, p = 2, type = "const")
-var_irf        <- vars::irf(var_estimation)
+var_estimation <- vars::VAR(vars::Canada, p = 2, type = "const")
+var_irf        <- vars::irf(var_estimation, impulse = 'e')
+```
+
+**default charts** are as below:
+```{r}
+plot(var_irf)
 ```
 
 and the impulse response graph via `ggirf` would be:

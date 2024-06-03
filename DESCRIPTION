@@ -1,11 +1,10 @@
 Package: ggirf
 Type: Package
 Title: ggplot2 backednd for impulse response analysis
-Version: 0.1.0
+Version: 0.2.0
 Author: Muhsin Ciftci
 Maintainer: Muhsin Ciftci <muhsin.ciftci@stud.uni-frankfurt.de>
-Description: This package provides with ggplot2 backend for impulse response analysis in macroeconometric estimations
-    across many packages in R. It aims to make post estimation easy and flexible.
+Description: This package provides with ggplot2 backend for impulse response analysis in macroeconometric estimations across many packages in R. It aims to make post estimation easy and flexible.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

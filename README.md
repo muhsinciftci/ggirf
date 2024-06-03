@@ -1,5 +1,7 @@
 
-# `ggirf`
+# ggirf
+
+<img src="man/figures/logo.png" align="right" height="175" alt="" />
 
 This package provides ggplot2 support for impulse response analysis in
 various packages such as `vars`, `lpirfs`, `BGVAR` used for
@@ -53,9 +55,17 @@ theme_set(gg_theme_irf())
 ```
 
 ``` r
-var_estimation <- vars::VAR(Canada, p = 2, type = "const")
-var_irf        <- vars::irf(var_estimation)
+var_estimation <- vars::VAR(vars::Canada, p = 2, type = "const")
+var_irf        <- vars::irf(var_estimation, impulse = 'e')
 ```
+
+**default charts** are as below:
+
+``` r
+plot(var_irf)
+```
+
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
 
 and the impulse response graph via `ggirf` would be:
 
@@ -65,7 +75,7 @@ gg_vars(irf_result = var_irf, var_shock = 'e') +
   scale_x_continuous(minor_breaks = NULL, n.breaks = 6)
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" /> or
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" /> or
 you can simply provide one variable as well. **Providing multiple shocks
 once is not allowed.** Providing a subset of endogenous variables at
 once is allowed though.
@@ -77,7 +87,7 @@ gg_vars(irf_result = var_irf, var_shock = 'e', var_endo = c('e', 'rw'), shade_co
   ggtitle('Subset of endogenous variables')
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
 
 ## Local projections impulse response analysis via `lpirfs` package
 
@@ -101,7 +111,7 @@ linear_plots <- plot_lin(est_lp_lin)
 linear_plots[[1]]
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />
 
 The same result in `ggirf` package would be:
 
@@ -113,7 +123,7 @@ gg_lpirfs_lin(
 )
 ```
 
-<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
 
 or plotting many endogenous variables at once is possible. Default is
 all variables
@@ -127,7 +137,7 @@ gg_lpirfs_lin(
   ggtitle('The impact of variable .... on variables')
 ```
 
-<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
 
 or one can only produce the resulting tibble instead of charts. This is
 useful especially when one want to compare results from different
